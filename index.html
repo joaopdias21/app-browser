@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário Callback</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<div class="container">
+
+    <h1 class="titulo">
+        Responder Formulário
+    </h1>
+
+    <div class="callback">
+        Callback: <span id="callbackValor">Carregando...</span>
+    </div>
+
+    <form id="formulario">
+
+        <div class="campo">
+            <label>Campo 1</label>
+            <input type="text" id="campo1">
+        </div>
+
+        <div class="campo">
+            <label>Campo 2</label>
+            <input type="text" id="campo2">
+        </div>
+
+        <button type="submit">
+            Salvar Respostas
+        </button>
+
+    </form>
+
+    <div id="mensagem"></div>
+
+</div>
+
+<script>
+
+    document.getElementById("callbackValor").textContent =
+    idCallback || "Não recebido";
+
+const params = new URLSearchParams(window.location.search);
+const idCallback = params.get('idCallback');
+
+console.log('ID CALLBACK:', idCallback);
+
+document.body.insertAdjacentHTML(
+    'afterbegin',
+    `<p>ID Callback: ${idCallback}</p>`
+);
+
+if (!idCallback) {
+    document.getElementById('mensagem').innerHTML =
+        '<div class="erro">idCallback não recebido.</div>';
+}
+
+document
+    .getElementById('formulario')
+    .addEventListener('submit', async (e) => {
+
+    e.preventDefault();
+
+    const campo1 = document.getElementById('campo1').value;
+    const campo2 = document.getElementById('campo2').value;
+
+    try {
+
+        const response = await fetch(
+            'https://dev-api.colmeia.me/v1/rest/callback-resume-bot-flow',
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization':
+                        'zFN5csAR7w4ZeYNjDVVP9PNyjBprDl6RazaNC8KpndZDUniOqv',
+                    'Content-Type': 'application/json',
+                    'idSocialNetwork':
+                        'vxPM6MlJyr0FMjtumDKyZIguRgQKEr'
+                },
+                body: JSON.stringify({
+                    idDatabase: 'PvUFmjg6zHA263i7C6inWmFyT92qUv',
+                    idCallback: idCallback,
+                    answer: {
+                        idCallback: idCallback,
+                        campo1: campo1,
+                        campo2: campo2
+                    },
+                    returnImmediately: false
+                })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Erro na API');
+        }
+
+        document.getElementById('mensagem').innerHTML =
+            '<div class="sucesso">✅ Salvo com sucesso!</div>';
+
+        document.getElementById('formulario').reset();
+
+    } catch (err) {
+
+        console.error(err);
+
+        document.getElementById('mensagem').innerHTML =
+            '<div class="erro">❌ Erro ao salvar.</div>';
+    }
+
+});
+</script>
+
+</body>
+</html>
