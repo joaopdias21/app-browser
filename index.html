@@ -68,29 +68,36 @@ document
 
     try {
 
-        const response = await fetch(
-            'https://dev-api.colmeia.me/v1/rest/callback-resume-bot-flow',
-            {
-                method: 'POST',
-                headers: {
-                    'Authorization':
-                        'zFN5csAR7w4ZeYNjDVVP9PNyjBprDl6RazaNC8KpndZDUniOqv',
-                    'Content-Type': 'application/json',
-                    'idSocialNetwork':
-                        'vxPM6MlJyr0FMjtumDKyZIguRgQKEr'
-                },
-                body: JSON.stringify({
-                    idDatabase: 'PvUFmjg6zHA263i7C6inWmFyT92qUv',
-                    idCallback: idCallback,
-                    answer: {
-                        idCallback: idCallback,
-                        campo1: campo1,
-                        campo2: campo2
-                    },
-                    returnImmediately: false
-                })
-            }
-        );
+       const payload = {
+    idDatabase: 'PvUFmjg6zHA263i7C6inWmFyT92qUv',
+    idCallback: idCallback,
+    answer: {
+        idCallback: idCallback,
+        campo1: campo1,
+        campo2: campo2
+    },
+    returnImmediately: false
+};
+
+console.log('PAYLOAD', JSON.stringify(payload, null, 2));
+
+const response = await fetch(
+    'https://dev-api.colmeia.me/v1/rest/callback-resume-bot-flow',
+    {
+        method: 'POST',
+        headers: {
+            Authorization: 'zFN5csAR7w4ZeYNjDVVP9PNyjBprDl6RazaNC8KpndZDUniOqv',
+            'Content-Type': 'application/json',
+            idSocialNetwork: 'vxPM6MlJyr0FMjtumDKyZIguRgQKEr'
+        },
+        body: JSON.stringify(payload)
+    }
+);
+
+const body = await response.text();
+
+console.log('STATUS', response.status);
+console.log('BODY', body);
 
         if (!response.ok) {
             throw new Error('Erro na API');
