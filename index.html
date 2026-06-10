@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="style.css">
 
 </head>
+<body>
+    
+
 <div class="container">
 
     <h1 class="titulo">
@@ -41,18 +44,13 @@
 
 <script>
 
-    document.getElementById("callbackValor").textContent =
-    idCallback || "Não recebido";
-
 const params = new URLSearchParams(window.location.search);
 const idCallback = params.get('idCallback');
 
 console.log('ID CALLBACK:', idCallback);
 
-document.body.insertAdjacentHTML(
-    'afterbegin',
-    `<p>ID Callback: ${idCallback}</p>`
-);
+document.getElementById('callbackValor').textContent =
+    idCallback || 'Não recebido';
 
 if (!idCallback) {
     document.getElementById('mensagem').innerHTML =
