@@ -32,9 +32,9 @@
             <input type="text" id="campo2">
         </div>
 
-        <button type="submit">
-            Salvar Respostas
-        </button>
+<button type="submit" id="btnSalvar">
+    Salvar Respostas
+</button>
 
     </form>
 
@@ -43,7 +43,6 @@
 </div>
 
 <script>
-
 const params = new URLSearchParams(window.location.search);
 const idCallback = params.get('idCallback');
 
@@ -56,12 +55,27 @@ if (!idCallback) {
     document.getElementById('mensagem').innerHTML =
         '<div class="erro">idCallback não recebido.</div>';
 }
+let enviando = false;
 
 document
     .getElementById('formulario')
     .addEventListener('submit', async (e) => {
 
+        const btnSalvar = document.getElementById('btnSalvar');
+
+btnSalvar.disabled = true;
+btnSalvar.innerHTML =
+    '<span class="loading">Salvando...</span>';
+
+document.getElementById('mensagem').innerHTML = '';
+
     e.preventDefault();
+
+        if (enviando) {
+        return;
+    }
+
+    enviando = true;
 
     const campo1 = document.getElementById('campo1').value;
     const campo2 = document.getElementById('campo2').value;
@@ -103,18 +117,23 @@ console.log('BODY', body);
             throw new Error('Erro na API');
         }
 
-        document.getElementById('mensagem').innerHTML =
-            '<div class="sucesso">✅ Salvo com sucesso!</div>';
+    btnSalvar.innerHTML = '✅ Salvo';
+    document
+    .querySelectorAll('input')
+    .forEach(input => input.disabled = true);
 
         document.getElementById('formulario').reset();
 
     } catch (err) {
 
-        console.error(err);
+    console.error(err);
+    enviando = false;
+    btnSalvar.disabled = false;
+    btnSalvar.innerHTML = 'Salvar Respostas';
 
-        document.getElementById('mensagem').innerHTML =
-            '<div class="erro">❌ Erro ao salvar.</div>';
-    }
+    document.getElementById('mensagem').innerHTML =
+        '<div class="erro">❌ Erro ao salvar.</div>';
+}
 
 });
 </script>
